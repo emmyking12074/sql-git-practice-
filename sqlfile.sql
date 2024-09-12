@@ -1,42 +1,74 @@
---DML QUERIES
---INSERT INTO DEPARTMENT_TABLE 
-INSERT INTO department_table(department_id,department_name )
-VALUES (1,'computer Science'),
-       (2,'Statistics'),
-	   3,'web Development')
+SELECT TOP(10) * FROM Superstore
 
---query to confirm your entries
-SELECT * FROM department_table
+--fetching specified column
+SELECT ship_mode, customer_name
+FROM Superstore
 
-INSERT INTO student_info
+--using aliase and calculate the unit price of each quantity
+SELECT Product_name, customer_name as name_, (sales/quantity) as unit_price
+FROM Superstore
 
-select * from student_info
+--using where clause
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE quantity >4;
 
---UPDATE VALUES SYNTAX UPDATE table_name SET column_to_update=values WHERE condition is met
---multiple values update 
-UPDATE student_info
-SET department_id=10
-WHERE student_id IN (4,3);
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE quantity BETWEEN 2 AND 4;
 
-SELECT * FROM student_info
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE quantity >=2 AND Quantity < 5
 
---single update 
-update student_info
-set CONTACT='080999998888'
-where student_id=5
+--using WHERE CLAUSE AND LIKE OPERATOR 
+--start word LIKE
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE City LIKE 'A%'and Quantity < 4
+--end word LIKE
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE City LIKE '%ON'
 
---use case statement to update multiple rows
-update student_info
-set CONTACT= CASE
-WHEN student_id=1 THEN '08139693633'
-WHEN student_id=2 THEN '09139694733'
-WHEN student_id=3 THEN '08145638788'
-WHEN student_id=4 THEN '09178763533'
-WHEN student_id=5 THEN '09176353533'
-ELSE CONTACT
-END
-WHERE student_id IN (1,2,3,4,5)
+--Middle or in between LIKE
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE City LIKE '%_m%'
 
---DELETE OPERATION
-DELETE FROM student_info
-WHERE student_id=3
+--using IN operator to find transaction of Ken Black, Joel Eaton, Ryan Crowe
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE Customer_name IN ( 'Ken Black', 'Joel Eaton', 'Ryan Crowe')
+
+--ORDER CLAUSE
+SELECT ship_mode, customer_name, product_name, city, sales, quantity
+FROM Superstore
+WHERE Customer_name IN ( 'Ken Black', 'Joel Eaton', 'Ryan Crowe')
+ORDER BY Quantity desc
+
+--GROUP BY CLAUSE
+SELECT City FROM Superstore 
+GROUP BY City
+
+SELECT City, count(*) as customer_count FROM Superstore 
+GROUP BY City
+
+SELECT City FROM Superstore 
+GROUP BY City
+HAVING Count(*) >100;
+
+SELECT City, count(*) as customer_count FROM Superstore 
+GROUP BY City
+HAVING Count(*) >100;
+
+
+SELECT city, SUM(Sales) AS Total_sales
+FROM superstore
+GROUP BY City
+ORDER BY Total_sales DESC
+
+SELECT city, SUM(Sales) AS Total_sales, MAX(Quantity) AS max_quantity, count(*) as 'number of transacton'
+FROM superstore
+GROUP BY City
+ORDER BY Total_sales DESC
