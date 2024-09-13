@@ -1,74 +1,40 @@
-SELECT TOP(10) * FROM Superstore
+--join queries using inner join
+--select the table to view the attribuites in entites
+SELECT * FROM sales_record
 
---fetching specified column
-SELECT ship_mode, customer_name
-FROM Superstore
+SELECT * FROM product_record
 
---using aliase and calculate the unit price of each quantity
-SELECT Product_name, customer_name as name_, (sales/quantity) as unit_price
-FROM Superstore
+SELECT customer, units_sold, product_name, price, s.product_id
+FROM sales_record AS s
+JOIN
+product_record AS p ON s.Product_ID=p.Product_ID
 
---using where clause
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE quantity >4;
-
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE quantity BETWEEN 2 AND 4;
-
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE quantity >=2 AND Quantity < 5
-
---using WHERE CLAUSE AND LIKE OPERATOR 
---start word LIKE
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE City LIKE 'A%'and Quantity < 4
---end word LIKE
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE City LIKE '%ON'
-
---Middle or in between LIKE
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE City LIKE '%_m%'
-
---using IN operator to find transaction of Ken Black, Joel Eaton, Ryan Crowe
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE Customer_name IN ( 'Ken Black', 'Joel Eaton', 'Ryan Crowe')
-
---ORDER CLAUSE
-SELECT ship_mode, customer_name, product_name, city, sales, quantity
-FROM Superstore
-WHERE Customer_name IN ( 'Ken Black', 'Joel Eaton', 'Ryan Crowe')
-ORDER BY Quantity desc
-
---GROUP BY CLAUSE
-SELECT City FROM Superstore 
-GROUP BY City
-
-SELECT City, count(*) as customer_count FROM Superstore 
-GROUP BY City
-
-SELECT City FROM Superstore 
-GROUP BY City
-HAVING Count(*) >100;
-
-SELECT City, count(*) as customer_count FROM Superstore 
-GROUP BY City
-HAVING Count(*) >100;
+--calculate the amount earn in each transaction or oder
+SELECT customer, units_sold, price, product_name, (units_sold *price) AS selling_price
+FROM sales_record s
+JOIN
+product_record p ON s.product_ID=p.Product_ID
 
 
-SELECT city, SUM(Sales) AS Total_sales
-FROM superstore
-GROUP BY City
-ORDER BY Total_sales DESC
+--calculating profit
+SELECT customer, units_sold, price, product_name, (units_sold * price) AS selling_price, (units_sold * Production_cost) AS Production_price, ((units_sold * price)-(units_sold * production_cost)) AS profit
+FROM sales_record s
+JOIN
+product_record p ON s.product_ID=p.Product_ID
 
-SELECT city, SUM(Sales) AS Total_sales, MAX(Quantity) AS max_quantity, count(*) as 'number of transacton'
-FROM superstore
-GROUP BY City
-ORDER BY Total_sales DESC
+--calculate the profit made from each product 
+SELECT product_name, SUM((units_sold *price)) AS total_sales_per_product,
+SUM((units_sold *production_cost)) AS production_cost,
+SUM(((units_sold *price)-(units_sold *production_cost))) AS PROFIT
+FROM sales_record s
+JOIN product_record p ON s.product_ID=p.product_ID
+GROUP BY product_name
+ORDER BY PROFIT DESC
+
+
+--calculate the profit made from each product 
+SELECT product_name,SUM(((units_sold *price)-(units_sold *production_cost))) AS PROFIT
+FROM sales_record s
+JOIN product_record p ON s.product_ID=p.Product_ID
+GROUP BY product_name
+ORDER BY PROFIT DESC
